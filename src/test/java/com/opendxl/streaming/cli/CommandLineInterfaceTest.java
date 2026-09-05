@@ -35,11 +35,16 @@ import static junit.framework.TestCase.assertTrue;
 
 
 public class CommandLineInterfaceTest {
+
+    /**
+     * Port of the WireMock server (override with -Dwiremock.port=<port> when 8080 is in use)
+     */
+    private static final int WIREMOCK_PORT = Integer.getInteger("wiremock.port", 8080);
     @Rule
     public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8080);
+    public WireMockRule wireMockRule = new WireMockRule(WIREMOCK_PORT);
 
     @Test
     public void shouldLoginSuccessfully() throws Exception {
@@ -52,7 +57,7 @@ public class CommandLineInterfaceTest {
                         .withBody("{\"authorizationToken\":\"MY_AUTHORIZATION_TOKEN\"}")));
         // Setup CLI parameters
         String args = "--operation login "
-                + "--auth-url http://localhost:8080/identity/v1/login "
+                + "--auth-url http://localhost:" + WIREMOCK_PORT + "/identity/v1/login "
                 + "--user myUsername "
                 + "--password myPassword "
                 + "--verify-cert-bundle 1234";
@@ -78,7 +83,7 @@ public class CommandLineInterfaceTest {
                         .withBody("Dummy 401 error message")));
         // Setup CLI parameters
         String args = "--operation login "
-                + "--auth-url http://localhost:8080/identity/v1/login "
+                + "--auth-url http://localhost:" + WIREMOCK_PORT + "/identity/v1/login "
                 + "--user myUsername "
                 + "--password myPassword "
                 + "--verify-cert-bundle 1234";
@@ -132,7 +137,7 @@ public class CommandLineInterfaceTest {
                         .withBody("{\"consumerInstanceId\":\"" + CONSUMER_ID + "\"}")));
         // Setup CLI parameters
         String args = "--operation create "
-                + "--url http://localhost:8080/databus/consumer-service/v1 "
+                + "--url http://localhost:" + WIREMOCK_PORT + "/databus/consumer-service/v1 "
                 + "--token MY_AUTHORIZATION_TOKEN "
                 + "--cg cg1 "
                 + "--config max.message.size=1000,min.message.size=200,auto.offset.reset=latest,"
@@ -166,7 +171,7 @@ public class CommandLineInterfaceTest {
                         .withBody("Dummy 401 error message")));
         // Setup CLI parameters
         String args = "--operation create "
-                + "--url http://localhost:8080/databus/consumer-service/v1 "
+                + "--url http://localhost:" + WIREMOCK_PORT + "/databus/consumer-service/v1 "
                 + "--token MY_AUTHORIZATION_TOKEN "
                 + "--cg cg1 "
                 + "--config max.message.size=1000,min.message.size=200,auto.offset.reset=anything,"
@@ -884,7 +889,7 @@ public class CommandLineInterfaceTest {
 
         // Setup create
         final String argsForCreate = "--operation create "
-                + "--url http://localhost:8080/databus/consumer-service/v1 "
+                + "--url http://localhost:" + WIREMOCK_PORT + "/databus/consumer-service/v1 "
                 + "--token myToken "
                 + "--cg cg16 "
                 + "--retry true "
@@ -906,7 +911,7 @@ public class CommandLineInterfaceTest {
 
         // Setup subscribe
         String argsForSubscribe = "--operation subscribe "
-                + "--url http://localhost:8080/databus/consumer-service/v1 "
+                + "--url http://localhost:" + WIREMOCK_PORT + "/databus/consumer-service/v1 "
                 + "--token myToken "
                 + "--consumer-id " + CONSUMER_ID + " "
                 + "--cookie " + stickinessCookie.getValue() + " "
@@ -924,7 +929,7 @@ public class CommandLineInterfaceTest {
 
         // Setup consume and commit
         String argsForConsume = "--operation consume "
-                + "--url http://localhost:8080/databus/consumer-service/v1 "
+                + "--url http://localhost:" + WIREMOCK_PORT + "/databus/consumer-service/v1 "
                 + "--token myToken "
                 + "--consumer-id " + consumerId + " "
                 + "--cookie " + stickinessCookie.getValue() + " "
@@ -935,7 +940,7 @@ public class CommandLineInterfaceTest {
         CommandLineInterface cliForConsume = new CommandLineInterface(argsForConsume.split(" "));
 
         String argsForCommit = "--operation commit "
-                + "--url http://localhost:8080/databus/consumer-service/v1 "
+                + "--url http://localhost:" + WIREMOCK_PORT + "/databus/consumer-service/v1 "
                 + "--token myToken "
                 + "--consumer-id " + consumerId + " "
                 + "--cookie " + stickinessCookie.getValue() + " "
@@ -968,7 +973,7 @@ public class CommandLineInterfaceTest {
 
         // Setup delete
         String argsForDelete = "--operation delete "
-                + "--url http://localhost:8080/databus/consumer-service/v1 "
+                + "--url http://localhost:" + WIREMOCK_PORT + "/databus/consumer-service/v1 "
                 + "--token myToken "
                 + "--consumer-id " + consumerId + " "
                 + "--cookie " + stickinessCookie.getValue() + " "
@@ -997,7 +1002,7 @@ public class CommandLineInterfaceTest {
                         .withStatus(204)));
         // Setup CLI parameters
         String args = "--operation produce "
-                + "--url http://localhost:8080/databus/cloudproxy/v1 "
+                + "--url http://localhost:" + WIREMOCK_PORT + "/databus/cloudproxy/v1 "
                 + "--token MY_AUTHORIZATION_TOKEN "
                 + "--producer-prefix /databus/cloudproxy/v1 "
                 + "--records " + TWO_SIMPLIFIED_PRODUCER_RECORDS + " "
@@ -1025,7 +1030,7 @@ public class CommandLineInterfaceTest {
                         .withStatus(204)));
         // Setup CLI parameters
         String args = "--operation produce "
-                + "--url http://localhost:8080/databus/cloudproxy/v1 "
+                + "--url http://localhost:" + WIREMOCK_PORT + "/databus/cloudproxy/v1 "
                 + "--token MY_AUTHORIZATION_TOKEN "
                 + "--producer-prefix /databus/cloudproxy/v1 "
                 + "--records [{\"topic\":\"my-topic\",\"payload\":\"Hello-OpenDXL-1\"}] "
@@ -1053,7 +1058,7 @@ public class CommandLineInterfaceTest {
                         .withStatus(204)));
         // Setup CLI parameters
         String args = "--operation produce "
-                + "--url http://localhost:8080/databus/cloudproxy/v1 "
+                + "--url http://localhost:" + WIREMOCK_PORT + "/databus/cloudproxy/v1 "
                 + "--token MY_AUTHORIZATION_TOKEN "
                 + "--producer-prefix /databus/cloudproxy/v1 "
                 + "--records [{\"topic\":\"my-topic\",\"payload\":\"Hello-OpenDXL-1\""
@@ -1081,7 +1086,7 @@ public class CommandLineInterfaceTest {
         // Setup
         // Setup CLI parameters
         String args = "--operation produce "
-                + "--url http://localhost:8080/databus/cloudproxy/v1 "
+                + "--url http://localhost:" + WIREMOCK_PORT + "/databus/cloudproxy/v1 "
                 + "--token MY_AUTHORIZATION_TOKEN "
                 + "--producer-prefix /databus/cloudproxy/v1 "
                 + "--records {\"records\":[{\"topic\":\"my-topic\"}]} "
@@ -1115,7 +1120,7 @@ public class CommandLineInterfaceTest {
                         .withStatus(400)));
         // Setup CLI parameters
         String args = "--operation produce "
-                + "--url http://localhost:8080/databus/cloudproxy/v1 "
+                + "--url http://localhost:" + WIREMOCK_PORT + "/databus/cloudproxy/v1 "
                 + "--token MY_AUTHORIZATION_TOKEN "
                 + "--producer-prefix /databus/cloudproxy/v1 "
                 + "--records [{\"topic\":\"my-topic\"}] "
@@ -1135,7 +1140,7 @@ public class CommandLineInterfaceTest {
         exit.expectSystemExitWithStatus(1);
 
         String args = "--operation produce "
-                + "--url http://localhost:8080/databus/cloudproxy/v1 "
+                + "--url http://localhost:" + WIREMOCK_PORT + "/databus/cloudproxy/v1 "
                 + "--token MY_AUTHORIZATION_TOKEN "
                 + "--producer-prefix /databus/cloudproxy/v1 "
                 + "--verify-cert-bundle 1234";
@@ -1161,7 +1166,7 @@ public class CommandLineInterfaceTest {
         exit.expectSystemExitWithStatus(1);
 
         String args = "--operation produce "
-                + "--url http://localhost:8080/databus/cloudproxy/v1 "
+                + "--url http://localhost:" + WIREMOCK_PORT + "/databus/cloudproxy/v1 "
                 + "--producer-prefix /databus/cloudproxy/v1 "
                 + "--records " + TWO_SIMPLIFIED_PRODUCER_RECORDS + " "
                 + "--verify-cert-bundle 1234";

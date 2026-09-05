@@ -160,6 +160,15 @@ sourceSets {
 }
 
 
+// HttpConnectionTest inspects the JDK SSL context reflectively, which JDK 9+ only allows with an explicit opens
+test {
+    if (JavaVersion.current().isJava9Compatible()) {
+        jvmArgs '--add-opens', 'java.base/sun.security.ssl=ALL-UNNAMED'
+    }
+    // The tests run a WireMock server on port 8080; use ./gradlew test -PwiremockPort=<port> if it is in use
+    systemProperty 'wiremock.port', project.findProperty('wiremockPort') ?: '8080'
+}
+
 // Make check style run before creating a jar
 jar.dependsOn(checkstyleMain)
 

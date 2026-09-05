@@ -52,11 +52,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChannelTest {
 
+    /**
+     * Port of the WireMock server (override with -Dwiremock.port=<port> when 8080 is in use)
+     */
+    private static final int WIREMOCK_PORT = Integer.getInteger("wiremock.port", 8080);
+
     private static final String CONSUMER_ID =
             "c4b60c6e-931e-496c-97c6-86c2935a353196fa80a1-f911-47ee-9a35-fc40a8c5137e";
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8080);
+    public WireMockRule wireMockRule = new WireMockRule(WIREMOCK_PORT);
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
@@ -1442,7 +1447,7 @@ public class ChannelTest {
         Assert.assertEquals(405, error.getStatusCode());
         Assert.assertEquals("Unexpected temporary error: HTTP/1.1 405 Method Not Allowed", error.getMessage());
         Assert.assertEquals("produce", error.getApi());
-        Assert.assertEquals("POST http://localhost:8080/internal-server-error/produce HTTP/1.1",
+        Assert.assertEquals("POST http://localhost:" + WIREMOCK_PORT + "/internal-server-error/produce HTTP/1.1",
                 error.getHttpRequest().toString());
     }
 
@@ -1509,7 +1514,7 @@ public class ChannelTest {
         extraConfigs.put("request.timeout.ms", 16000);
         extraConfigs.put("session.timeout.ms", 15000);
 
-        Channel channel = new Channel("http://localhost:8080",
+        Channel channel = new Channel("http://localhost:" + WIREMOCK_PORT + "",
                 new ChannelAuthToken("myToken"),
                 "cg1",
                 null,
@@ -1527,7 +1532,7 @@ public class ChannelTest {
     }
 
     private Channel getCreatedChannel(final ChannelAuth channelAuth) throws PermanentError, TemporaryError {
-        Channel channel = new Channel("http://localhost:8080",
+        Channel channel = new Channel("http://localhost:" + WIREMOCK_PORT + "",
                 channelAuth,
                 "cg1",
                 null,
@@ -1547,7 +1552,7 @@ public class ChannelTest {
     }
 
     private Channel getSubscribedChannel(final ChannelAuth channelAuth) throws PermanentError, TemporaryError {
-        Channel channel = new Channel("http://localhost:8080",
+        Channel channel = new Channel("http://localhost:" + WIREMOCK_PORT + "",
                 channelAuth,
                 "cg1",
                 null,
@@ -1606,7 +1611,7 @@ public class ChannelTest {
     }
 
     private static Channel getProducerChannel(final String producerPathPrefix) throws TemporaryError {
-        final Channel channel = new Channel("http://localhost:8080",
+        final Channel channel = new Channel("http://localhost:" + WIREMOCK_PORT + "",
                 new ChannelAuthToken("myToken"),
                 null,
                 null,

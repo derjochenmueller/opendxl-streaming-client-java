@@ -26,17 +26,22 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
 public class ChannelAuthUserPassTest {
 
+    /**
+     * Port of the WireMock server (override with -Dwiremock.port=<port> when 8080 is in use)
+     */
+    private static final int WIREMOCK_PORT = Integer.getInteger("wiremock.port", 8080);
+
     private ChannelAuthUserPass channelAuthUserPass;
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8080);
+    public WireMockRule wireMockRule = new WireMockRule(WIREMOCK_PORT);
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
     @Before
     public final void setUp() throws PermanentError, TemporaryError {
-        this.channelAuthUserPass = new ChannelAuthUserPass("http://localhost:8080",
+        this.channelAuthUserPass = new ChannelAuthUserPass("http://localhost:" + WIREMOCK_PORT + "",
                 "username",
                 "password",
                 null,

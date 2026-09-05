@@ -67,7 +67,8 @@ the library for exactly that Java release and runs its GitHub Actions workflow o
 only. Missing JDKs are downloaded automatically by the
 [foojay toolchain resolver](https://github.com/gradle/foojay-toolchains) configured in
 `settings.gradle`, so `./gradlew build` works on any branch regardless of the locally
-installed JDK.
+installed JDK (the resolver stays at 0.9.0, the last version that runs on a Java 8 or 11
+Gradle JVM).
 
 | Branch   | JDK / bytecode level | Notes                                                        |
 |----------|----------------------|--------------------------------------------------------------|

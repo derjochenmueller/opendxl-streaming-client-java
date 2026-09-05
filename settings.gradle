@@ -1,7 +1,9 @@
 // Auto-provision the JDK requested by the java toolchain in build.gradle (see README.md, "Branches")
 // when it is not installed locally. Downloads go to ~/.gradle/jdks.
+// Stay on 0.9.0: it is the last resolver version whose Gradle module metadata allows a Java 8 JVM
+// (1.0.0 requires JVM 17, which breaks the jdk8/jdk11 branches where Gradle itself runs on that JDK).
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.9.0'
 }
 
 rootProject.name = 'dxlstreamingclient'

@@ -17,7 +17,7 @@ master_doc = 'index'
 pygments_style = 'tango'
 add_function_parentheses = True
 
-extensions = ['sphinx.ext.autodoc', 'javasphinx',
+extensions = ['sphinx.ext.autodoc',
               'sphinxcontrib.plantuml']
 #'sphinxcontrib-inlinesyntaxhighlight',
 templates_path = ['_templates']

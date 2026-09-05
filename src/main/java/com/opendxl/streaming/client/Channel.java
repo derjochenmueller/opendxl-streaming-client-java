@@ -1250,7 +1250,7 @@ public class Channel implements Consumer, Producer, AutoCloseable {
     /**
      * Update consumer filter with updated filter values
      *
-     * @param topics Topic list.
+     * @param filter Updated filter values (payload lookup keys and their matching values).
      * @throws ConsumerError  if the consumer associated with the channel does not
      *                        exist on the server.
      * @throws PermanentError if no consumer instance-id was specified.

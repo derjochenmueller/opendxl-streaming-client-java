@@ -18,7 +18,6 @@ import junit.extensions.PA;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +40,7 @@ public class CommandLineInterfaceTest {
      */
     private static final int WIREMOCK_PORT = Integer.getInteger("wiremock.port", 8080);
     @Rule
-    public final ExpectedSystemExit exit = ExpectedSystemExit.none();
+    public final ExpectedExit exit = ExpectedExit.none();
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(WIREMOCK_PORT);

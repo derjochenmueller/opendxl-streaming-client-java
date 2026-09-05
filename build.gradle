@@ -1,3 +1,17 @@
+// OWASP dependency-check needs Java 11+ and an NVD API key (https://nvd.nist.gov/developers/request-an-api-key).
+// The plugin is only put on the build classpath (and applied further below) when the key is provided, so the
+// build itself keeps working on a Java 8 JVM: ./gradlew dependencyCheckAnalyze -PnvdApiKey=<key>
+buildscript {
+    if (project.hasProperty('nvdApiKey')) {
+        repositories {
+            mavenCentral()
+        }
+        dependencies {
+            classpath 'org.owasp:dependency-check-gradle:12.2.2'
+        }
+    }
+}
+
 plugins {
     id 'checkstyle'
     id 'java-library'
@@ -7,7 +21,6 @@ plugins {
     id "com.gradleup.shadow" version "8.3.11"
     id "kr.motd.sphinx" version "2.10.1"
     id "jacoco"
-    id "org.owasp.dependencycheck" version "12.2.2" apply false
 }
 
 apply plugin: 'base'
@@ -28,15 +41,14 @@ repositories {
     mavenCentral()
 }
 
-// OWASP dependency-check needs Java 11+ and an NVD API key (https://nvd.nist.gov/developers/request-an-api-key).
-// It is only applied when the key is provided: ./gradlew dependencyCheckAnalyze -PnvdApiKey=<key>
+// OWASP dependency-check, see the buildscript block at the top
 if (project.hasProperty('nvdApiKey')) {
     apply plugin: 'org.owasp.dependencycheck'
     dependencyCheck {
         nvd {
             apiKey = project.property('nvdApiKey')
         }
-        suppressionFile = file("${projectDir}/config/dependency-check/owasp-suppression.xml")
+        suppressionFile = "${projectDir}/config/dependency-check/owasp-suppression.xml"
     }
     check.dependsOn dependencyCheckAnalyze
 }

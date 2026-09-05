@@ -31,10 +31,18 @@ apply plugin: 'signing'
 
 group 'com.opendxl'
 
-// The client is consumed from Java 8 applications; keep the bytecode and the language level at Java 8
+// Branch-specific: `jdk11` is the JDK 11 line (see README.md, "Branches"). Compilation, tests and javadoc run
+// on a JDK 11 toolchain (downloaded by the foojay resolver in settings.gradle when it is not installed) and the
+// bytecode/language level is Java 11 (`--release 11`). master (JDK 21) and the other jdk* branches pin their own
+// JDK here; the library API is identical on all branches.
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 11
 }
 
 repositories {
@@ -171,11 +179,11 @@ sourceSets {
 }
 
 
-// HttpConnectionTest inspects the JDK SSL context reflectively, which JDK 9+ only allows with an explicit opens
+// HttpConnectionTest inspects the JDK SSL context reflectively, which JDK 9+ only allows with an explicit opens.
+// The tests run on the toolchain JDK (11 on this branch), not on the JVM running Gradle, so the flag is set
+// unconditionally here; only the jdk8 branch leaves it out (javac/java 8 do not know the option).
 test {
-    if (JavaVersion.current().isJava9Compatible()) {
-        jvmArgs '--add-opens', 'java.base/sun.security.ssl=ALL-UNNAMED'
-    }
+    jvmArgs '--add-opens', 'java.base/sun.security.ssl=ALL-UNNAMED'
     // The tests run a WireMock server on port 8080; use ./gradlew test -PwiremockPort=<port> if it is in use
     systemProperty 'wiremock.port', project.findProperty('wiremockPort') ?: '8080'
 }

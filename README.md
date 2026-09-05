@@ -59,6 +59,49 @@ or Gradle:
 compile 'com.opendxl:dxlstreamingclient:0.1.8'
 ```
 
+## Branches
+
+The repository is maintained as one branch per supported JDK. Every branch pins its JDK
+with a Gradle Java toolchain (`java.toolchain.languageVersion` in `build.gradle`), compiles
+the library for exactly that Java release and runs its GitHub Actions workflow on that JDK
+only. Missing JDKs are downloaded automatically by the
+[foojay toolchain resolver](https://github.com/gradle/foojay-toolchains) configured in
+`settings.gradle`, so `./gradlew build` works on any branch regardless of the locally
+installed JDK.
+
+| Branch   | JDK / bytecode level | Notes                                                        |
+|----------|----------------------|--------------------------------------------------------------|
+| `master` | 21                   | Main development line, language level 21                     |
+| `jdk17`  | 17                   |                                                              |
+| `jdk11`  | 11                   |                                                              |
+| `jdk8`   | 8                    | Java 8 bytecode; OWASP dependency-check is not available     |
+
+The library API (packages, classes, signatures, wire format) is identical on all branches;
+the branches differ only in build settings, in the Java release the bytecode is compiled
+for, and in JDK specific test runner settings. Branch specific settings are marked with
+comments in `build.gradle` and `.github/workflows/gradle.yml`.
+
+Workflow for changes:
+
+1. Fix on `master` first and let its workflow run go green.
+2. Cherry-pick the commit into the older branches where it applies, from newest to oldest:
+   `jdk17` -> `jdk11` -> `jdk8`, keeping the reference to the original commit:
+
+   ```sh
+   git checkout jdk17 && git cherry-pick -x <sha>
+   git checkout jdk11 && git cherry-pick -x <sha>
+   git checkout jdk8  && git cherry-pick -x <sha>
+   ```
+
+3. Push each branch; the branch's own workflow run (`build`, one job on the branch's JDK)
+   must be green before the change is considered done on that branch.
+
+Local build, on any branch (use `-PwiremockPort=<port>` if port 8080 is taken):
+
+```sh
+./gradlew build
+```
+
 ## Bugs and Feedback
 
 For bugs, questions and discussions please use the

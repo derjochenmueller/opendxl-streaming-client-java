@@ -60,8 +60,19 @@ tasks.withType(AbstractCopyTask).configureEach {
 }
 
 dependencies {
-        classpath 'org.owasp:dependency-check-gradle:7.1.2'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'com.github.stefanbirkner:system-rules:1.19.0'
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.2'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+    implementation 'com.e-movimento.tinytools:privilegedaccessor:1.2.2'
+    implementation 'net.sf.jopt-simple:jopt-simple:5.0.4'
+    implementation 'commons-codec:commons-codec:1.22.1'
+    implementation ('org.apache.httpcomponents:httpclient:4.5.14'){
+        exclude group : 'commons-codec', module: 'commons-codec'
     }
+    implementation 'com.google.code.gson:gson:2.14.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.26.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.26.1'
 }
 
 // Jar Manifest info

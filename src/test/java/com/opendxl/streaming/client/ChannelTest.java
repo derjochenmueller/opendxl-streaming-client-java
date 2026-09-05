@@ -39,7 +39,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
@@ -616,7 +616,7 @@ public class ChannelTest {
         // Setup
         // Setup a ChannelAuth mock to verify that its reset() method is called once when channel is deleted
         ChannelAuth channelAuthMock = Mockito.mock(ChannelAuth.class);
-        Mockito.doNothing().when(channelAuthMock).authenticate(Matchers.any());
+        Mockito.doNothing().when(channelAuthMock).authenticate(ArgumentMatchers.any());
         Channel channel = getSubscribedChannel(channelAuthMock);
         // Add a dummy Cookie to the CookieStore to test that Channel.delete() has emptied the CookieStore.
         Request request = (Request) PA.getValue(channel, "request");
@@ -653,7 +653,7 @@ public class ChannelTest {
         setUpWireMockStubs(CONSUMER_ID, "topic-1", jsonConsumerRecords.get(0));
         // Setup channel object under test
         ChannelAuth channelAuthMock = Mockito.mock(ChannelAuth.class);
-        Mockito.doNothing().when(channelAuthMock).authenticate(Matchers.any());
+        Mockito.doNothing().when(channelAuthMock).authenticate(ArgumentMatchers.any());
         Channel channel = getCreatedChannel(channelAuthMock);
         // Setup two empty lists to collect records received by the callback
         List<ConsumerRecords.ConsumerRecord> consumedRecords = new ArrayList<>();
@@ -743,7 +743,7 @@ public class ChannelTest {
         setUpWireMockStubs(CONSUMER_ID, "topic-1", jsonConsumerRecords.get(0), timeoutMs);
         // Setup channel object under test
         ChannelAuth channelAuthMock = Mockito.mock(ChannelAuth.class);
-        Mockito.doNothing().when(channelAuthMock).authenticate(Matchers.any());
+        Mockito.doNothing().when(channelAuthMock).authenticate(ArgumentMatchers.any());
         Channel channel = getCreatedChannel(channelAuthMock);
         // Setup two empty lists to collect records received by the callback
         List<ConsumerRecords.ConsumerRecord> consumedRecords = new ArrayList<>();
@@ -830,7 +830,7 @@ public class ChannelTest {
         setUpWireMockStubs(CONSUMER_ID, "topic-1", JSON_CONSUMER_RECORD_0);
         // Setup channel object under test
         ChannelAuth channelAuthMock = Mockito.mock(ChannelAuth.class);
-        Mockito.doNothing().when(channelAuthMock).authenticate(Matchers.any());
+        Mockito.doNothing().when(channelAuthMock).authenticate(ArgumentMatchers.any());
         Channel channel = getCreatedChannel(channelAuthMock);
         // Setup a counter to tell whether this is the 1st or 2nd time channel runs
         final int[] runStopCount = new int[1];
@@ -900,7 +900,7 @@ public class ChannelTest {
         setUpWireMockStubs(CONSUMER_ID, "topic-1", JSON_CONSUMER_RECORD_0);
         // Setup channel object under test
         ChannelAuth channelAuthMock = Mockito.mock(ChannelAuth.class);
-        Mockito.doNothing().when(channelAuthMock).authenticate(Matchers.any());
+        Mockito.doNothing().when(channelAuthMock).authenticate(ArgumentMatchers.any());
         Channel channel = getCreatedChannel(channelAuthMock);
         // Setup callback which receives consumed records. It will be called only once.
         final int[] callbackCounter = new int[1];
@@ -943,7 +943,7 @@ public class ChannelTest {
         final String newConsumerId = "recreated-consumer-id";
         // Setup channel object under test
         ChannelAuth channelAuthMock = Mockito.mock(ChannelAuth.class);
-        Mockito.doNothing().when(channelAuthMock).authenticate(Matchers.any());
+        Mockito.doNothing().when(channelAuthMock).authenticate(ArgumentMatchers.any());
         Channel channel = getCreatedChannel(channelAuthMock);
         // Setup callback which receives consumed records.
         final int[] consumerIdCounter = new int[1];
@@ -1002,7 +1002,7 @@ public class ChannelTest {
     public final void stopShouldSucceedWhenChannelIsNotExecutingRunMethod() throws ClientError {
         // Setup
         ChannelAuth channelAuthMock = Mockito.mock(ChannelAuth.class);
-        Mockito.doNothing().when(channelAuthMock).authenticate(Matchers.any());
+        Mockito.doNothing().when(channelAuthMock).authenticate(ArgumentMatchers.any());
         Channel channel = getSubscribedChannel(channelAuthMock);
 
         // Test
@@ -1021,7 +1021,7 @@ public class ChannelTest {
     public final void stopShouldSucceedWhenChannelIsExecutingRunMethod() throws ClientError {
         // Setup
         ChannelAuth channelAuthMock = Mockito.mock(ChannelAuth.class);
-        Mockito.doNothing().when(channelAuthMock).authenticate(Matchers.any());
+        Mockito.doNothing().when(channelAuthMock).authenticate(ArgumentMatchers.any());
         Channel channel = getSubscribedChannel(channelAuthMock);
         // Setup simulation that channel is running
         ((AtomicBoolean) PA.getValue(channel, "running")).set(true);
@@ -1078,7 +1078,7 @@ public class ChannelTest {
         setUpWireMockStubs(CONSUMER_ID, topic, "");
         // Setup Channel instance to be tested
         ChannelAuth channelAuthMock = Mockito.mock(ChannelAuth.class);
-        Mockito.doNothing().when(channelAuthMock).authenticate(Matchers.any());
+        Mockito.doNothing().when(channelAuthMock).authenticate(ArgumentMatchers.any());
         Channel channel = getCreatedChannel(channelAuthMock);
         // Setup callback and a thread to execute Channel.run() in background
         ConsumerRecordProcessor consumerRecordCallback = new ConsumerRecordProcessor() {

@@ -1,11 +1,16 @@
 name: build
 
+# Branch-specific (see README.md, "Branches"): this branch is the JDK 8 line, so the workflow runs on the
+# `jdk8` branch and builds with JDK 8 only (Gradle 8.x itself still runs on a Java 8 JVM). master (JDK 21) and
+# the other jdk* branches carry their own matrix.
 on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - jdk8
   pull_request:
+    branches:
+      - jdk8
 
 jobs:
   build:
@@ -13,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: [ 8, 11, 17, 21 ]
+        java-version: [ 8 ]
       fail-fast: false
 
     steps:

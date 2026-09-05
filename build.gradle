@@ -1,6 +1,8 @@
 // OWASP dependency-check needs Java 11+ and an NVD API key (https://nvd.nist.gov/developers/request-an-api-key).
 // The plugin is only put on the build classpath (and applied further below) when the key is provided, so the
 // build itself keeps working on a Java 8 JVM: ./gradlew dependencyCheckAnalyze -PnvdApiKey=<key>
+// Branch-specific (jdk8): the workflow runs Gradle itself on JDK 8, so the check cannot run in CI on this branch;
+// it only works when Gradle runs on a JDK 11+ JVM (the JDK 8 toolchain below is still used for compiling).
 buildscript {
     if (project.hasProperty('nvdApiKey')) {
         repositories {
@@ -31,8 +33,15 @@ apply plugin: 'signing'
 
 group 'com.opendxl'
 
-// The client is consumed from Java 8 applications; keep the bytecode and the language level at Java 8
+// Branch-specific: `jdk8` is the JDK 8 line (see README.md, "Branches"). Compilation, tests and javadoc run
+// on a JDK 8 toolchain (downloaded by the foojay resolver in settings.gradle when it is not installed) and the
+// bytecode/language level is Java 8. javac 8 has no `--release` option, so unlike master (JDK 21) and the other
+// jdk* branches this branch uses sourceCompatibility/targetCompatibility. The library API is identical on all
+// branches.
 java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
@@ -171,11 +180,10 @@ sourceSets {
 }
 
 
-// HttpConnectionTest inspects the JDK SSL context reflectively, which JDK 9+ only allows with an explicit opens
+// HttpConnectionTest inspects the JDK SSL context reflectively. The tests run on the JDK 8 toolchain (not on the
+// JVM running Gradle), which has no module system, so the `--add-opens java.base/sun.security.ssl` flag that
+// master (JDK 21) and the other jdk* branches pass to the test JVM is neither needed nor accepted here.
 test {
-    if (JavaVersion.current().isJava9Compatible()) {
-        jvmArgs '--add-opens', 'java.base/sun.security.ssl=ALL-UNNAMED'
-    }
     // The tests run a WireMock server on port 8080; use ./gradlew test -PwiremockPort=<port> if it is in use
     systemProperty 'wiremock.port', project.findProperty('wiremockPort') ?: '8080'
 }
